@@ -20,14 +20,14 @@ function makeBg() {
     add(bgGround);
 }
 
-function makeBird(birdObj, birdRad, birdColor, x, y) {
-    birdObj.body = new Circle(birdRad);
-    birdObj.body.setPosition(x, y);
-    birdObj.body.setColor(birdColor);
+function makeBird(birdObj) {
+    birdObj.body = new Circle(birdObj.rad);
+    birdObj.body.setPosition(birdObj.x, birdObj.y);
+    birdObj.body.setColor(birdObj.color);
     // add(birdArr[BODY]);
     
-    const EYE_RAD = birdRad / 3;
-    const EYE_X = x + EYE_RAD * 2.5, EYE_Y = y - EYE_RAD;
+    const EYE_RAD = birdObj.rad / 3;
+    const EYE_X = birdObj.x + EYE_RAD * 2.5, EYE_Y = birdObj.y - EYE_RAD;
     
     birdObj.eye = new Circle(EYE_RAD);
     birdObj.eye.setPosition(EYE_X, EYE_Y);
@@ -42,8 +42,8 @@ function makeBird(birdObj, birdRad, birdColor, x, y) {
     birdObj.pupil.setColor(Color.black);
     // add(birdArr[PUPIL]);
     
-    const BEAK_W = birdRad / 2, BEAK_H = birdRad / 3;
-    const BEAK_X = x + (birdRad / 1.5), BEAK_Y = y;
+    const BEAK_W = birdObj.rad  / 2, BEAK_H = birdObj.rad / 3;
+    const BEAK_X = birdObj.x + (birdObj.rad / 1.5), BEAK_Y = birdObj.y;
     
     birdObj.beak = new Rectangle(BEAK_W, BEAK_H);
     birdObj.beak.setPosition(BEAK_X, BEAK_Y);
@@ -58,12 +58,13 @@ var birdObj = {
     eye: 0,
     pupil: 0,
     beak: 0,
-    color: 0,
-    x: 0,
-    y: 0
+    color: Color.yellow,
+    rad: 20,
+    x: CENTER_X,
+    y: CENTER_Y
 };
 
-makeBird(birdObj, 20, Color.yellow, CENTER_X, CENTER_Y);
+makeBird(birdObj);
 
 add(birdObj.body);
 add(birdObj.eye);
