@@ -1,3 +1,4 @@
+// Define constants for later use
 const WIDTH = getWidth();
 const HEIGHT = getHeight();
 const CENTER_X = WIDTH / 2;
@@ -15,6 +16,7 @@ var birdObj = {
     y: CENTER_Y
 };
 
+// Make 2 rectangles, one green and one blue
 function makeBg() {
     var bgSky, bgGround;
     
@@ -30,6 +32,7 @@ function makeBg() {
     add(bgGround);
 }
 
+// Create all the variables for the bird
 function makeBird(birdObj) {
     birdObj.body = new Circle(birdObj.rad);
     birdObj.body.setPosition(birdObj.x, birdObj.y);
@@ -57,10 +60,13 @@ function makeBird(birdObj) {
     birdObj.beak.setColor(Color.orange);
 }
 
+// This function is the reason birdObj is global
+// Move the bird's position as the cursor moves
 function moveBird(e) {
     birdObj.x = e.getX();
     birdObj.y = e.getY();
     
+    // These could be made into a function, but this works fine
     const EYE_RAD = birdObj.rad / 3;
     var eye_x = birdObj.x + EYE_RAD * 2.5, eye_y = birdObj.y - EYE_RAD;
     const PUPIL_RAD = EYE_RAD / 2;
