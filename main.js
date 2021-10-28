@@ -20,48 +20,53 @@ function makeBg() {
     add(bgGround);
 }
 
-function makeBird(birdArr, birdRad, birdColor, x, y) {
-    const BODY = 1, EYE = 2, PUPIL = 3, BEAK = 4;
-    
-    birdArr[BODY] = new Circle(birdRad);
-    birdArr[BODY].setPosition(x, y);
-    birdArr[BODY].setColor(birdColor);
+function makeBird(birdObj) {
+    birdObj.body = new Circle(birdObj.rad);
+    birdObj.body.setPosition(birdObj.x, birdObj.y);
+    birdObj.body.setColor(birdObj.color);
     // add(birdArr[BODY]);
     
-    const EYE_RAD = birdRad / 3;
-    const EYE_X = x + EYE_RAD * 2.5, EYE_Y = y - EYE_RAD;
+    const EYE_RAD = birdObj.rad / 3;
+    const EYE_X = birdObj.x + EYE_RAD * 2.5, EYE_Y = birdObj.y - EYE_RAD;
     
-    birdArr[EYE] = new Circle(EYE_RAD);
-    birdArr[EYE].setPosition(EYE_X, EYE_Y);
-    birdArr[EYE].setColor(Color.white);
+    birdObj.eye = new Circle(EYE_RAD);
+    birdObj.eye.setPosition(EYE_X, EYE_Y);
+    birdObj.eye.setColor(Color.white);
     // add(birdArr[EYE]);
     
     const PUPIL_RAD = EYE_RAD / 2;
     const PUPIL_X = EYE_X + PUPIL_RAD, PUPIL_Y = EYE_Y - PUPIL_RAD;
     
-    birdArr[PUPIL] = new Circle(PUPIL_RAD);
-    birdArr[PUPIL].setPosition(PUPIL_X, PUPIL_Y);
-    birdArr[PUPIL].setColor(Color.black);
+    birdObj.pupil = new Circle(PUPIL_RAD);
+    birdObj.pupil.setPosition(PUPIL_X, PUPIL_Y);
+    birdObj.pupil.setColor(Color.black);
     // add(birdArr[PUPIL]);
     
-    const BEAK_W = birdRad / 2, BEAK_H = birdRad / 3;
-    const BEAK_X = x + (birdRad / 1.5), BEAK_Y = y;
+    const BEAK_W = birdObj.rad  / 2, BEAK_H = birdObj.rad / 3;
+    const BEAK_X = birdObj.x + (birdObj.rad / 1.5), BEAK_Y = birdObj.y;
     
-    birdArr[BEAK] = new Rectangle(BEAK_W, BEAK_H);
-    birdArr[BEAK].setPosition(BEAK_X, BEAK_Y);
-    birdArr[BEAK].setColor(Color.orange);
+    birdObj.beak = new Rectangle(BEAK_W, BEAK_H);
+    birdObj.beak.setPosition(BEAK_X, BEAK_Y);
+    birdObj.beak.setColor(Color.orange);
     // add(birdArr[BEAK]);
-    
-    var retArr = []; retArr = birdArr;
-    return retArr;
 }
 
 makeBg();
 
-var bird = [];
-bird = makeBird(bird, 20, Color.yellow, CENTER_X, CENTER_Y);
+var birdObj = {
+    body: 0,
+    eye: 0,
+    pupil: 0,
+    beak: 0,
+    color: Color.yellow,
+    rad: 20,
+    x: CENTER_X,
+    y: CENTER_Y
+};
 
-// This gives an error, idk why
-for(var i = 0; i < bird.length; i++) {
-    add(bird[i]);
-}
+makeBird(birdObj);
+
+add(birdObj.body);
+add(birdObj.eye);
+add(birdObj.pupil);
+add(birdObj.beak);
