@@ -24,6 +24,4 @@ Now, because this would be too easy, we've come up with several ideas on how to 
 
 And a few more we didn't get to write down
 
-**This game is made with the [CodeHS](codehs.com) Graphical-JS codebase in mind, meaning this will ___not___ run as a standalone program**
-
-Try the game [here](https://codehs.com/sandbox/codingconnor/mouseybird/run)!
+**This game is built with the [CodeHS](codehs.com) Graphical-JS codebase in mind, meaning this will ___not___ run as a standalone program**
