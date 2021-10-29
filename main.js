@@ -4,6 +4,8 @@ const HEIGHT = getHeight();
 const CENTER_X = WIDTH / 2;
 const CENTER_Y = HEIGHT / 2;
 
+const PIPE_WIDTH = 50;
+
 // Sloppy, but hey it works
 var birdObj = {
     body: 0,
@@ -84,7 +86,6 @@ function moveBird(e) {
 
 // Normally, I'd pass in birdObj. But, because it's a global object I don't need to
 function makePipe() {
-    const PIPE_WIDTH = 50;
     var pipe1, p1_height, pipe2, p2_height;
     var pipeGap, pipeColor;
     var rPipeColor = [];
@@ -119,8 +120,12 @@ function makePipe() {
 function movePipe() {
     for(var i = 0; i < birdObj.pipeArr.length; i++) {
         birdObj.pipeArr[i].move(-1, 0);
+        
+        // Stop the game from making infinite pipes
+        if(birdObj.pipeArr[0].getX() < -1 * PIPE_WIDTH) {
+            birdObj.pipeArr.splice(0, 2);
+        }
     }
-    
 }
 
 // Yes, this isn't C++. I'm still making a main function anyway
