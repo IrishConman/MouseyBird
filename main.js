@@ -13,8 +13,10 @@ var birdObj = {
     color: Randomizer.nextColor(),
     rad: 20,
     x: CENTER_X,
-    y: CENTER_Y
+    y: CENTER_Y,
+    pipeArr: []
 };
+
 
 // Make 2 rectangles, one green and one blue
 function makeBg() {
@@ -80,6 +82,47 @@ function moveBird(e) {
     birdObj.beak.setPosition(beak_x, beak_y);
 }
 
+// Normally, I'd pass in birdObj. But, because it's a global object I don't need to
+function makePipe() {
+    const PIPE_WIDTH = 50;
+    var pipe1, p1_height, pipe2, p2_height;
+    var pipeGap, pipeColor;
+    var rPipeColor = [];
+    
+    pipeGap = Randomizer.nextInt(birdObj.rad * 3, birdObj.rad * 4);
+    p1_height = Randomizer.nextInt(0, HEIGHT - pipeGap);
+    
+    pipe1 = new Rectangle(PIPE_WIDTH, p1_height);
+    pipe1.setPosition(WIDTH - PIPE_WIDTH, 0);
+    
+    p2_height = HEIGHT - p1_height - pipeGap;
+    pipe2 = new Rectangle(PIPE_WIDTH, p2_height);
+    pipe2.setPosition(WIDTH - PIPE_WIDTH, HEIGHT - p2_height);
+    
+    for(var i = 0; i < 3; i++) {
+        rPipeColor[i] = Randomizer.nextInt(127, 255);
+    }
+    pipeColor = new Color(rPipeColor[0], rPipeColor[1], rPipeColor[2]); 
+    
+    pipe1.setColor(pipeColor);
+    pipe2.setColor(pipeColor);
+    
+    birdObj.pipeArr.push(pipe1);
+    birdObj.pipeArr.push(pipe2);
+    
+    add(birdObj.pipeArr[birdObj.pipeArr.length - 1]);
+    add(birdObj.pipeArr[birdObj.pipeArr.length - 2]);
+}
+
+// Because of setTimer badness not letting me pass variables into the function,
+// the array I need to store pipes in must be global
+function movePipe() {
+    for(var i = 0; i < birdObj.pipeArr.length; i++) {
+        birdObj.pipeArr[i].move(-1, 0);
+    }
+    
+}
+
 // Yes, this isn't C++. I'm still making a main function anyway
 function main() {
     makeBg();
@@ -91,6 +134,10 @@ function main() {
     add(birdObj.pupil);
     add(birdObj.beak);
     
+    makePipe();
+    setTimer(makePipe, 2000)
+    setTimer(movePipe, 5);
+
     mouseMoveMethod(moveBird);
 }
 
