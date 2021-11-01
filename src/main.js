@@ -20,9 +20,10 @@ var birdObj = {
     pipeArr: [],
     dead: false,
     points: 0,
+    started: 0,
+    title: 0,
+    start: 0
 };
-
-var pipeGap;
 
 // Make 2 rectangles, one green and one blue
 function makeBg() {
@@ -38,6 +39,16 @@ function makeBg() {
     bgGround.setPosition(0, HEIGHT - GROUND_HEIGHT);
     bgGround.setColor("#009919");
     add(bgGround);
+    
+    birdObj.title = new Text("Mousey Bird", "30pt Helvetica");
+    birdObj.title.setPosition(CENTER_X - birdObj.title.getWidth() / 2, CENTER_Y - birdObj.title.getHeight() * 2);
+    birdObj.title.setColor(Color.white);
+    add(birdObj.title);
+    
+    birdObj.start = new Text("Click to start!", "20pt Helvetica");
+    birdObj.start.setPosition(CENTER_X - birdObj.start.getWidth() / 2, CENTER_Y - birdObj.start.getHeight() / 2);
+    birdObj.start.setColor(Color.white);
+    add(birdObj.start);
 }
 
 // Create all the variables for the bird
@@ -98,18 +109,18 @@ function moveBird(e) {
 function makePipe() {
     if(!birdObj.dead) {
         var pipe1, p1_height, pipe2, p2_height;
-        var pipeColor;
+        var pipeGap, pipeColor;
         var rPipeColor = [];
         
-        pipeGap = Randomizer.nextInt(birdObj.rad * 3, birdObj.rad * 4);
+        pipeGap = Randomizer.nextInt(birdObj.rad * 2.5, birdObj.rad * 3.5);
         p1_height = Randomizer.nextInt(0, HEIGHT - pipeGap);
         
         pipe1 = new Rectangle(PIPE_WIDTH, p1_height);
-        pipe1.setPosition(WIDTH - PIPE_WIDTH, 0);
+        pipe1.setPosition(WIDTH, 0);
         
         p2_height = HEIGHT - p1_height - pipeGap;
         pipe2 = new Rectangle(PIPE_WIDTH, p2_height);
-        pipe2.setPosition(WIDTH - PIPE_WIDTH, HEIGHT - p2_height);
+        pipe2.setPosition(WIDTH, HEIGHT - p2_height);
         
         for(var i = 0; i < 3; i++) {
             rPipeColor[i] = Randomizer.nextInt(127, 255);
@@ -193,10 +204,16 @@ function checkDead() {
     }
 }
 
-// Yes, this isn't C++. I'm still making a main function anyway
-function main() {
-    makeBg();
-    
+function startGame(e) {
+    if(birdObj.started == 0) {
+        game();
+        remove(birdObj.title);
+        remove(birdObj.start);
+        birdObj.started = 1;
+    }
+}
+
+function game() {
     makeBird(birdObj);
     
     add(birdObj.body);
@@ -206,10 +223,15 @@ function main() {
     
     makePipe();
     setTimer(makePipe, 2000)
-    setTimer(movePipe, 5);
-    setTimer(checkDead, 5);
+    setTimer(movePipe, 1);
+    setTimer(checkDead, 1);
 
     mouseMoveMethod(moveBird);
+}
+
+function main() {
+    makeBg();
+    mouseClickMethod(startGame);
 }
 
 main();
