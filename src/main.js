@@ -123,7 +123,7 @@ function makePipe() {
         pipe2.setPosition(WIDTH, HEIGHT - p2_height);
         
         for(var i = 0; i < 3; i++) {
-            rPipeColor[i] = Randomizer.nextInt(127, 255);
+            rPipeColor[i] = Randomizer.nextInt(50, 255);
         }
         pipeColor = new Color(rPipeColor[0], rPipeColor[1], rPipeColor[2]); 
         
