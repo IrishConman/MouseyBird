@@ -8,6 +8,7 @@ const PIPE_WIDTH = 50;
 
 // Sloppy, but hey it works
 var birdObj = {
+    outline: 0,
     body: 0,
     eye: 0,
     pupil: 0,
@@ -15,7 +16,7 @@ var birdObj = {
     colDetect: 0,
     color: Randomizer.nextColor(),
     rad: 20,
-    x: CENTER_X,
+    x: CENTER_X / 2,
     y: CENTER_Y,
     pipeArr: [],
     dead: false,
@@ -53,30 +54,44 @@ function makeBg() {
 
 // Create all the variables for the bird
 function makeBird(birdObj) {
+    
+    // Used for colision detection
     birdObj.colDetect = new Rectangle(birdObj.rad * 2, birdObj.rad * 2);
     birdObj.colDetect.setPosition(birdObj.x - birdObj.rad, birdObj.y - birdObj.rad);
     
+    // Better for better visibility with certain bird colors
+    birdObj.outline = new Circle(birdObj.rad * 1.05);
+    birdObj.outline.setPosition(birdObj.x, birdObj.y);
+    birdObj.outline.setColor(Color.black);
+    
+    // The main circle that makes up the bird
     birdObj.body = new Circle(birdObj.rad);
     birdObj.body.setPosition(birdObj.x, birdObj.y);
     birdObj.body.setColor(birdObj.color);
     
+    // Radius and positioning of the eye
     const EYE_RAD = birdObj.rad / 3;
     var eye_x = birdObj.x + EYE_RAD * 2.5, eye_y = birdObj.y - EYE_RAD;
     
+    // The bird's eye
     birdObj.eye = new Circle(EYE_RAD);
     birdObj.eye.setPosition(eye_x, eye_y);
     birdObj.eye.setColor(Color.white);
     
+    // Radius and positioning of the pupil
     const PUPIL_RAD = EYE_RAD / 2;
     var pupil_x = eye_x + PUPIL_RAD, pupil_y = eye_y - PUPIL_RAD;
     
+    // The bird's pupil
     birdObj.pupil = new Circle(PUPIL_RAD);
     birdObj.pupil.setPosition(pupil_x, pupil_y);
     birdObj.pupil.setColor(Color.black);
     
+    // Dimensions and positioning of the beak
     const BEAK_W = birdObj.rad  / 2, BEAK_H = birdObj.rad / 3;
     var beak_x = birdObj.x + (birdObj.rad / 1.5), beak_y = birdObj.y;
     
+    // The bird's beak
     birdObj.beak = new Rectangle(BEAK_W, BEAK_H);
     birdObj.beak.setPosition(beak_x, beak_y);
     birdObj.beak.setColor(Color.orange);
@@ -98,6 +113,7 @@ function moveBird(e) {
         var beak_x = birdObj.x + (birdObj.rad / 1.5), beak_y = birdObj.y;
         
         birdObj.colDetect.setPosition(birdObj.x - birdObj.rad, birdObj.y - birdObj.rad);
+        birdObj.outline.setPosition(birdObj.x, birdObj.y);
         birdObj.body.setPosition(birdObj.x, birdObj.y);
         birdObj.eye.setPosition(eye_x, eye_y);
         birdObj.pupil.setPosition(pupil_x, pupil_y);
@@ -112,6 +128,7 @@ function makePipe() {
         var pipeGap, pipeColor;
         var rPipeColor = [];
         
+        // Anywhere between 1.5x bigger than the bird or 2.5x bigger
         pipeGap = Randomizer.nextInt(birdObj.rad * 2.5, birdObj.rad * 3.5);
         p1_height = Randomizer.nextInt(0, HEIGHT - pipeGap);
         
@@ -123,7 +140,7 @@ function makePipe() {
         pipe2.setPosition(WIDTH, HEIGHT - p2_height);
         
         for(var i = 0; i < 3; i++) {
-            rPipeColor[i] = Randomizer.nextInt(50, 255);
+            rPipeColor[i] = Randomizer.nextInt(100, 255);
         }
         pipeColor = new Color(rPipeColor[0], rPipeColor[1], rPipeColor[2]); 
         
@@ -143,13 +160,16 @@ function makePipe() {
 function movePipe() {
     var colX1, colY1, colX2, colY2;
     var pipeX1, pipeY1, pipeX2, pipeY2;
+    var speed = 2;
     
     if(!birdObj.dead) {
         for(var i = 0; i < birdObj.pipeArr.length; i++) {
-            birdObj.pipeArr[i].move(-1, 0);
+            birdObj.pipeArr[i].move(-speed, 0);
             
             if(birdObj.pipeArr[0].getX() < -1 * PIPE_WIDTH) {
                 birdObj.pipeArr.splice(0, 2);
+                remove(birdObj.pipeArr[0]);
+                remove(birdObj.pipeArr[1]);
             }
             
             // I could make another function for colission detection, but I'm lazy
@@ -163,12 +183,19 @@ function movePipe() {
                 birdObj.dead = true;
             }
             
+            // Give the player points if they fully get past a pipe, then remove the pipe
             if(colX1 > pipeX2) {
+                /*
                 if(!(birdObj.pipeArr[i].getColor() == Color.black)){
                     // For some reason, this runs twice. So .5 is used at the value added
                     birdObj.points += .5;
                 }
                 birdObj.pipeArr[i].setColor(Color.black);
+                */
+                
+                birdObj.points += 0.5;
+                remove(birdObj.pipeArr[0]);
+                birdObj.pipeArr.splice(0, 1);
             }
             
         }
@@ -189,6 +216,7 @@ function checkDead() {
         textBg.setPosition(CENTER_X - textBg.getWidth() / 2, CENTER_Y - textBg.getHeight() / 2);
         textBg.setColor(Color.black);
         
+        remove(birdObj.outline);
         remove(birdObj.body);
         remove(birdObj.eye);
         remove(birdObj.pupil);
@@ -216,13 +244,14 @@ function startGame(e) {
 function game() {
     makeBird(birdObj);
     
+    add(birdObj.outline);
     add(birdObj.body);
     add(birdObj.eye);
     add(birdObj.pupil);
     add(birdObj.beak);
     
     makePipe();
-    setTimer(makePipe, 2000)
+    setTimer(makePipe, 1250)
     setTimer(movePipe, 1);
     setTimer(checkDead, 1);
 
